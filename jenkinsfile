@@ -32,7 +32,9 @@ pipeline {
         }
          stage("tf init"){
              steps{
-                 sh 'terraform --version'
+                 //sh 'terraform --version'
+                 echo 'Hello TF!'
+                 
              }
         }
     }
