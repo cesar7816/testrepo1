@@ -1,5 +1,7 @@
 pipeline {
-    agent 'npe-deploy-pod'
+    agent { 
+                label 'npe-deploy-pod'
+    }
 
     parameters {
         choice(name: 'ACTION', choices: ['import',], description: 'this is the only action of this pipeline.')
