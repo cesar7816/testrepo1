@@ -30,13 +30,6 @@ pipeline {
                 echo 'Hello world!'
             }
         }
-
-        stage("git checkout"){
-            steps {
-                echo 'Doing Git'
-                checkout([$class: 'GitSCM', branches: [[name: '*/tf-import-module-01']], extensions: [], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/Equifax/8035_US_IRIS_SRE_TF_PUBSUB.git']]])
-            }
-        }
          stage("tf init"){
              steps{
                  sh 'terraform --version'
