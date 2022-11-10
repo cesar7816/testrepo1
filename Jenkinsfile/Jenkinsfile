@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'ACTION', choices: ['import',], description: 'this is the only action of this pipeline.')
+        choice(name: 'REGION', choices: ['default', 'us-east1', 'us-west1'], description: 'Choose Region if TF var file is located in region folder in the config-npe repo or select default.')
+        choice(name: 'ENVIRONMENT', choices: ['global_npe','dev', 'qa', 'sandbox', 'qa_firestore','npeuat'], description: 'Choose environment.')
+        choice(name: 'PROVISIONING_TYPE', choices: ['Base Infrastructure', 'Core Security'], description: 'Choose type of provisioning')
+        //string(name: 'MAIN_REPO_BRANCH', defaultValue: pipelineParams.mainRepoBranch, description: 'Main repository branch')
+        //string(name: 'CONFIG_REPO_BRANCH', defaultValue: pipelineParams.configRepoBranch, description: 'Config repository branch')
+        string(name: 'PROJECT', description: 'write down the project')
+        string(name: 'RESOURCE_NAME', defaultValue: '', description: 'Use this option to import any resource into your TF state OR Delete it from your TF state')
+        //string(name: 'RESOURCE_ID', defaultValue: '', description: 'Use this option to import any resource into your TF state')}
+    }
+
+    stages {
+        
+        stage('Printing Parameters') {
+            steps {
+                echo "Action ${params.ACTION}"
+                echo "Region: ${params.REGION}"
+                echo "ENVIRONMENT: ${params.ENVIRONMENT}"
+                echo "PROVISIONING_TYPE: ${params.PROVISIONING_TYPE}"
+                //echo "MAIN_REPO_BRANCH: ${params.MAIN_REPO_BRANCH}"
+                echo "terraform ${ACTION} ${ENVIRONMENT} ${RESOURCE_NAME}"
+            }
+        }
+        stage('Stage hello W') {
+            steps {
+                echo 'Hello world!'
+            }
+        }
+
+        stage("git checkout"){
+            steps {
+                echo 'Doing Git'
+                checkout([$class: 'GitSCM', branches: [[name: '*/tf-import-module-01']], extensions: [], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/Equifax/8035_US_IRIS_SRE_TF_PUBSUB.git']]])
+            }
+        }
+         stage("tf init"){
+             steps{
+                 sh 'terraform --version'
+             }
+        }
+    }
+}
